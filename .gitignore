@@ -1,0 +1,123 @@
+# ======================
+# Модели и большие файлы
+# ======================
+models/*.gguf
+models/*.bin
+models/*.safetensors
+models/*.pth
+!models/README.md  # сохраняем только README в папке моделей
+
+# ======================
+# Данные и векторы
+# ======================
+data/processed/
+data/embeddings/
+data/chunks/
+*.pdf
+*.docx
+*.txt
+*.csv
+
+# ======================
+# Конфигурации и секреты
+# ======================
+.env
+.env.local
+.env.production
+config/secrets.yaml
+config/credentials.json
+*.key
+*.pem
+
+# ======================
+# Python
+# ======================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ======================
+# Базы данных
+# ======================
+*.db
+*.sqlite
+*.sqlite3
+pgdata/
+postgres_data/
+
+# ======================
+# Логи
+# ======================
+*.log
+logs/
+test_logs/
+
+# ======================
+# IDE
+# ======================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ======================
+# OS
+# ======================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ======================
+# Docker
+# ======================
+docker-compose.override.yml
+
+# ======================
+# Тестовые данные
+# ======================
+test_output/
+temp/
+tmp/
+
+
+# Виртуальные окружения
+.venv/
+venv/
+env/
+ENV/
+
+# Conda
+.miniconda/
+anaconda3/
+conda-envs/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
