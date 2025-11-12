@@ -1,9 +1,7 @@
 import numpy as np
-from llama_cpp import Llama
 from typing import List, Dict, Any, Optional
 import psycopg2
 from psycopg2.extras import execute_values
-import os
 
 
 class Embeder:
@@ -11,27 +9,15 @@ class Embeder:
     Класс эмбеддер для преобразования входящих запросов.
     """
 
-    def __init__(self, model_path: str, db_config: Dict[str, Any], n_ctx: int = 512, n_threads: int = 4):
+    def __init__(self, model: Any, db_config: Dict[str, Any]):
         """
         Инициализация эмбеддера.
-
         Args:
-            model_path (str): Путь к GGUF-модели
+            model (Any): Модель для создания эмбеддингов
             db_config (Dict): Конфигурация подключения к PostgreSQL
-            n_ctx (int): Размер контекста модели
-            n_threads (int): Количество потоков для вычислений
         """
 
-        if not os.path.exists(model_path):
-            raise FileNotFoundError(f"Модель не найдена: {model_path}")
-
-        self.model = Llama(
-            model_path=model_path,
-            n_ctx=n_ctx,
-            n_threads=n_threads,
-            embedding=True,
-            verbose=False
-        )
+        self.model = model
 
         test_embedding = self._safe_embed("test")
         self.embedding_dim = len(test_embedding)
@@ -78,10 +64,8 @@ class Embeder:
     def generate_embedding(self, text: str) -> np.ndarray:
         """
         Генерация эмбеддинга для текста.
-
         Args:
             text (str): Входной текст
-
         Returns:
             np.ndarray: Вектор эмбеддинга
         """
@@ -92,11 +76,9 @@ class Embeder:
     def embed_and_store(self, content: str, metadata: Optional[Dict] = None) -> int:
         """
         Преобразует текст в эмбеддинг и сохраняет в базу данных.
-
         Args:
             content (str): Текст для преобразования
             metadata (Dict): Метаданные документа
-
         Returns:
             int: ID сохраненной записи
         """
@@ -125,11 +107,9 @@ class Embeder:
     def batch_embed_and_store(self, documents: List[str], metadata_list: Optional[List[Dict]] = None) -> List[int]:
         """
         Пакетное преобразование текстов в эмбеддинги и сохранение в базу данных.
-
         Args:
             documents (List[str]): Список текстов для обработки
             metadata_list (List[Dict]): Список метаданных
-
         Returns:
             List[int]: Список ID сохраненных записей
         """
@@ -167,10 +147,8 @@ class Embeder:
     def get_embedding_by_id(self, record_id: int) -> Optional[Dict[str, Any]]:
         """
         Получает запись с эмбеддингом по ID.
-
         Args:
             record_id (int): ID записи
-
         Returns:
             Dict: Информация о записи (id, content, embedding, metadata, created_at)
         """
@@ -217,3 +195,4 @@ class Embeder:
             'embedding_dim': self.embedding_dim,
             'stored_embeddings_count': self.get_stored_count()
         }
+    
