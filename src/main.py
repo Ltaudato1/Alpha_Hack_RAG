@@ -1,5 +1,6 @@
 from config.database import db
 from psycopg2.extras import Json
+from services.vector_store import VectorStore
 
 def test_docker_database():
     try:
@@ -8,36 +9,15 @@ def test_docker_database():
         db.connect()
         
         db.init_tables()
+
+        store = VectorStore()
+
+        store.store_embedding("Текстовый текст из Docker", [0.1] * 768, Json({"source": "docker_test"}))
         
-        with db.connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT table_name 
-                FROM information_schema.tables 
-                WHERE table_name = 'text_embeddings'
-            """)
-            table_exists = cursor.fetchone()
-            print(f"✅ Таблица text_embeddings: {'существует' if table_exists else 'не найдена'}")
-            
-            # Проверяем расширение vector
-            cursor.execute("SELECT EXISTS(SELECT 1 FROM pg_extension WHERE extname = 'vector')")
-            vector_exists = cursor.fetchone()['exists']
-            print(f"✅ Расширение vector: {'установлено' if vector_exists else 'не установлено'}")
-            
-            # Пробуем вставить тестовые данные
-            cursor.execute("""
-                INSERT INTO text_embeddings (text_content, embedding, metadata)
-                VALUES (%s, %s, %s)
-                RETURNING id
-            """, ("Тестовый текст из Docker", [0.1] * 768, Json({"source": "docker_test"})))
-            
-            inserted_id = cursor.fetchone()['id']
-            db.connection.commit()
-            print(f"✅ Тестовые данные добавлены с ID: {inserted_id}")
-            
-            # Проверяем что данные есть
-            cursor.execute("SELECT COUNT(*) as count FROM text_embeddings")
-            count = cursor.fetchone()['count']
-            print(f"✅ Всего записей в таблице: {count}")
+        res = store.get_all_texts()
+        
+        print(res)
+
     
     except Exception as e:
         print(f"❌ Ошибка: {e}")

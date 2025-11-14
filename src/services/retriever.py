@@ -1,16 +1,15 @@
 import psycopg2
 from pgvector.psycopg2 import register_vector
+from config.database import db
 
 
 class Retriever:
 
-    def __init__(self, dbname, user, password):
-        self.conn = psycopg2.connect(dbname=dbname, user=user, password=password)
-
-        register_vector(self.conn)
-        self.cur = self.conn.cursor()
+    def __init__(self):
+        self.db = db
     
     def retrieve(self, query_embedding, limit=5):
+
         search_sql = """
         SELECT 
             id,
@@ -21,9 +20,12 @@ class Retriever:
         ORDER BY embedding <=> %s
         LIMIT %s
         """
-        self.cur.execute(search_sql, (query_embedding, query_embedding, limit))
 
-        results = self.cur.fetchall()
+        results = ''
+
+        with self.db.connection.cursor() as cur:
+            cur.execute(search_sql, (query_embedding, query_embedding, limit))
+            results = cur.fetchall()
 
         return results
 
