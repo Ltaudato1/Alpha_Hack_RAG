@@ -3,9 +3,9 @@ services:
     image: pgvector/pgvector:pg16
     container_name: rag_postgres
     environment:
-      POSTGRES_DB: rag_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5433:5432"
     volumes:
@@ -28,10 +28,6 @@ services:
         condition: service_healthy
     volumes:
       - ./models:/app/models
-      - ./src:/app/src
-      - ./embeder.py:/app/embeder.py
-      - ./retriever.py:/app/retriever.py
-      - ./main.py:/app/main.py
 
 volumes:
   postgres_data:
