@@ -1,5 +1,4 @@
-import numpy as np
-from src.config.database import db
+from config.database import db
 
 class VectorStore:
     def __init__(self):
