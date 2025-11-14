@@ -89,8 +89,11 @@ class Embeder:
             raise ValueError("Количество документов и метаданных должно совпадать")
 
         print(f"🔄 Генерация эмбеддингов для {len(documents)} документов...")
+        res = []
         for doc, metadata in zip(documents, metadata_list):
-            self.embed_and_store(doc, metadata)
+            res.append(self.embed_and_store(doc, metadata))
+        
+        return res
 
     def get_model_info(self) -> Dict[str, Any]:
         """Возвращает информацию о модели"""
