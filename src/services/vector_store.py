@@ -1,4 +1,5 @@
 from config.database import db
+from psycopg2.extras import Json
 
 class VectorStore:
     def __init__(self):
@@ -22,7 +23,7 @@ class VectorStore:
                     (text_content, embedding, metadata) 
                     VALUES (%s, %s, %s)
                     RETURNING id
-                """, (text, embedding_list, metadata or {}))
+                """, (text, embedding_list, Json(metadata or {})))
                 
                 inserted_id = cursor.fetchone()['id']
                 self.db.connection.commit()

@@ -36,12 +36,12 @@ class Database:
     
     def init_tables(self):
         """Инициализация таблиц для хранения векторов"""
-        with self.connection.cursor() as cursor:
+        with self.connection.cursor() as cursor: # для модели all-MiniLM-L6-v2.Q4_0.gguf
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS text_embeddings (
                     id BIGSERIAL PRIMARY KEY,
                     text_content TEXT NOT NULL,
-                    embedding vector(768),
+                    embedding vector(384), 
                     metadata JSONB DEFAULT '{}'::jsonb,
                     created_at TIMESTAMP DEFAULT NOW()
                 );

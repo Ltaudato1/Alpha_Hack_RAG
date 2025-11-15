@@ -1,27 +1,16 @@
 import numpy as np
 from typing import List, Dict, Any, Optional
-from services.vector_store import VectorStore
+from src.services.vector_store import VectorStore
 
 
 class Embeder:
-    """
-    Класс эмбеддер для преобразования входящих запросов.
-    """
-
     def __init__(self, model: Any, store: VectorStore):
-        """
-        Инициализация эмбеддера.
-        Args:
-            model (Any): Модель для создания эмбеддингов
-            store: Экземпляр класса VectorStore
-        """
-
         self.model = model
+        self.store = store
 
+        # Тестируем модель и получаем правильную размерность
         test_embedding = self._safe_embed("test")
         self.embedding_dim = len(test_embedding)
-
-        self.store = store
 
         print(f"✅ Эмбеддер инициализирован. Размерность: {self.embedding_dim}")
 
@@ -67,7 +56,7 @@ class Embeder:
         embedding = self.generate_embedding(content)
 
         try:
-            self.store.store_embedding(content, embedding, metadata)
+            return self.store.store_embedding(content, embedding, metadata)
 
         except Exception as e:
             print(f"❌ Ошибка сохранения эмбеддинга: {e}")
@@ -92,13 +81,5 @@ class Embeder:
         res = []
         for doc, metadata in zip(documents, metadata_list):
             res.append(self.embed_and_store(doc, metadata))
-        
-        return res
 
-    def get_model_info(self) -> Dict[str, Any]:
-        """Возвращает информацию о модели"""
-        return {
-            'embedding_dim': self.embedding_dim,
-            'stored_embeddings_count': self.get_stored_count()
-        }
-    
+        return res

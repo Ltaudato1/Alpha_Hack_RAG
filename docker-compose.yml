@@ -28,6 +28,9 @@ services:
         condition: service_healthy
     volumes:
       - ./models:/app/models
+      - .:/app  # Добавляем монтирование текущей директории
+    command: sleep infinity  # ← ЭТА СТРОКА ДЕРЖИТ КОНТЕЙНЕР АКТИВНЫМ
+    restart: unless-stopped
 
 volumes:
   postgres_data:
