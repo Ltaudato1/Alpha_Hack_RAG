@@ -1,6 +1,6 @@
 import psycopg2
 from pgvector.psycopg2 import register_vector
-from config.database import db
+from src.config.database import db
 
 
 class Retriever:
@@ -11,16 +11,16 @@ class Retriever:
 
     def retrieve(self, query_embedding, limit=5):
         search_sql = """
-        SELECT id, text_content as content, 1 - (embedding <=> %s) as similarity
+        SELECT DISTINCT metadata, embedding <=> %s AS similarity
         FROM text_embeddings 
-        ORDER BY embedding <=> %s ASC  
+        ORDER BY similarity  
         LIMIT %s
         """
 
         results = ''
 
         with self.db.connection.cursor() as cur:
-            cur.execute(search_sql, (query_embedding, query_embedding, limit))
+            cur.execute(search_sql, (query_embedding, limit))
             results = cur.fetchall()
 
         return results

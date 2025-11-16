@@ -1,4 +1,4 @@
-from config.database import db
+from src.config.database import db
 from psycopg2.extras import Json
 
 class VectorStore:

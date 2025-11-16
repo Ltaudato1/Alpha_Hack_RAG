@@ -41,7 +41,7 @@ class Database:
                 CREATE TABLE IF NOT EXISTS text_embeddings (
                     id BIGSERIAL PRIMARY KEY,
                     text_content TEXT NOT NULL,
-                    embedding vector(384), 
+                    embedding vector(768), 
                     metadata JSONB DEFAULT '{}'::jsonb,
                     created_at TIMESTAMP DEFAULT NOW()
                 );
