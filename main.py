@@ -15,7 +15,8 @@ import os
 
 def load_embedding_model():
     """Загрузка GGUF модели для эмбеддингов"""
-    model_path = "models/nomic-embed-text-v2-moe-q8_0.gguf"
+    model_path = "models/jina-embeddings-v4-text-retrieval-IQ1_S.gguf"
+    #model_path = "models/qodo-embed-1-1.5b-q4_k_m.gguf"
 
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Модель не найдена по пути: {model_path}")
@@ -23,7 +24,6 @@ def load_embedding_model():
     model = Llama(
             model_path=model_path,
             embedding=True,
-            n_ctx=2048,
             n_threads=6,
             n_threads_batch=6,
             verbose=False
@@ -32,7 +32,7 @@ def load_embedding_model():
     print("✅ Модель для эмбеддингов загружена")
     return model
 
-def chunk_text(text, chunk_size=150, overlap=30):
+def chunk_text(text, chunk_size=250, overlap=50):
     """
     Разбивает текст на чанки заданного размера с перекрытием
     
@@ -78,7 +78,7 @@ def chunk_text(text, chunk_size=150, overlap=30):
     
     return chunks
 
-def load_csv_texts(csv_path, num_texts=None, chunk_size=150, overlap=30, min_chunk_length=50):
+def load_csv_texts(csv_path, num_texts=None, chunk_size=250, overlap=50, min_chunk_length=50):
     """Загрузка текстов из CSV файла с разбивкой на чанки"""
     
     texts = []

@@ -1,11 +1,13 @@
 from src.config.database import db
 from psycopg2.extras import Json
+from typing import List, Dict, Any, Optional
+
 
 class VectorStore:
     def __init__(self):
         self.db = db
     
-    def store_embedding(self, text, embedding, metadata=None):
+    def store_embedding(self, text: str, embedding: List[float], metadata: Optional[Dict[str, Any]] = None) -> Optional[int]:
         """
         Сохраняет текст и его эмбеддинг в БД
         
@@ -15,15 +17,13 @@ class VectorStore:
             metadata: дополнительные метаданные (источник, тип и т.д.)
         """
         try:
-            embedding_list = embedding.tolist() if hasattr(embedding, 'tolist') else embedding
-            
             with self.db.connection.cursor() as cursor:
                 cursor.execute("""
                     INSERT INTO text_embeddings 
                     (text_content, embedding, metadata) 
                     VALUES (%s, %s, %s)
                     RETURNING id
-                """, (text, embedding_list, Json(metadata or {})))
+                """, (text, embedding, Json(metadata or {})))
                 
                 inserted_id = cursor.fetchone()['id']
                 self.db.connection.commit()
@@ -36,7 +36,7 @@ class VectorStore:
             self.db.connection.rollback()
             return None
     
-    def get_all_texts(self, limit=100):
+    def get_all_texts(self, limit: int = 100) -> List[Dict[str, Any]]:
         """Получить все тексты (для отладки)"""
         try:
             with self.db.connection.cursor() as cursor:

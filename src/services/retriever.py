@@ -1,6 +1,7 @@
 import psycopg2
 from pgvector.psycopg2 import register_vector
 from src.config.database import db
+from typing import List
 
 
 class Retriever:
@@ -9,7 +10,7 @@ class Retriever:
         # Регистрируем векторный тип
         register_vector(self.db.connection)
 
-    def retrieve(self, query_embedding, limit=5):
+    def retrieve(self, query_embedding: List[float], limit: int = 5) -> List:
         search_sql = """
         SELECT DISTINCT metadata, embedding <=> %s AS similarity
         FROM text_embeddings 
